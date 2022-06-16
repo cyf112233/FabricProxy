@@ -38,19 +38,10 @@ public class FabricProxy implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        String module = mixinClassName.split("\\.")[3];
-        if (module.equals("bungee") && config.getBungeeCord()) {
+        String[] path = mixinClassName.split("\\.");
+        if (path[3].equals("bungee") && config.getBungeeCord()) {
             logger.info("BungeeCord support injected: {}", mixinClassName);
             return true;
-        }
-
-        if (module.equals("velocity") && config.getVelocity()) {
-            if (config.getSecret().isEmpty()) {
-                logger.error("Error: velocity secret is empty!");
-            } else {
-                logger.info("Velocity support injected: {}", mixinClassName);
-                return true;
-            }
         }
 
         return false;

@@ -8,7 +8,6 @@ import net.minecraft.network.NetworkState;
 import net.minecraft.network.packet.c2s.handshake.HandshakeC2SPacket;
 import net.minecraft.network.packet.s2c.login.LoginDisconnectS2CPacket;
 import net.minecraft.server.network.ServerHandshakeNetworkHandler;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import one.oktw.interfaces.BungeeClientConnection;
 import one.oktw.mixin.ClientConnectionAccessor;
@@ -29,7 +28,7 @@ public class ServerHandshakeNetworkHandlerMixin {
     @Final
     private ClientConnection connection;
 
-    @Inject(method = "onHandshake", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerLoginNetworkHandler;<init>(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/network/ClientConnection;)V"))
+    @Inject(method = "onHandshake", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/ClientConnection;setPacketListener(Lnet/minecraft/network/listener/PacketListener;)V"))
     private void onProcessHandshakeStart(HandshakeC2SPacket packet, CallbackInfo ci) {
         if (config.getBungeeCord() && packet.getIntendedState().equals(NetworkState.LOGIN)) {
             String[] split = ((HandshakeC2SPacketAccessor) packet).getAddress().split("\00");
@@ -42,7 +41,7 @@ public class ServerHandshakeNetworkHandlerMixin {
                 }
             } else {
                 if (!config.getAllowBypassProxy()) {
-                    Text disconnectMessage = new LiteralText("If you wish to use IP forwarding, please enable it in your BungeeCord config as well!");
+                    Text disconnectMessage = Text.of("If you wish to use IP forwarding, please enable it in your BungeeCord config as well!");
                     connection.send(new LoginDisconnectS2CPacket(disconnectMessage));
                     connection.disconnect(disconnectMessage);
                 }
