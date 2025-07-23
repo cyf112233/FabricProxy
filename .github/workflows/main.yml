@@ -32,7 +32,7 @@ jobs:
     - name: Change permissions
       run: chmod +x ./start.sh
     - name: Cache Gradle dependencies
-      uses: actions/cache@v4
+      uses: actions/cache@v2
       with:
         path: |
           ~/.gradle/caches
